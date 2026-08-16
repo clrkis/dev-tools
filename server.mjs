@@ -1,3 +1,5 @@
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "llama3.2";
+const OLLAMA_URL = process.env.OLLAMA_URL || "http://127.0.0.1:11434";
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
@@ -236,11 +238,11 @@ $("prompt").addEventListener("keydown",e=>{
 </html>`;
 
 async function agent(prompt){
- const key=process.env.GROQ_API_KEY;
+ const key=process.env.OLLAMA_API_KEY;
  if(!key){
    return {
      ok:false,
-     answer:"agent chưa có GROQ_API_KEY. đặt biến môi trường GROQ_API_KEY để bật AI.",
+     answer:"agent chưa có OLLAMA_API_KEY. đặt biến môi trường OLLAMA_API_KEY để bật AI.",
      code:""
    };
  }
@@ -317,5 +319,5 @@ const server=http.createServer(async(req,res)=>{
 
 server.listen(port,"0.0.0.0",()=>{
  console.log("DEV-TOOLS AGENT: http://0.0.0.0:"+port);
- console.log("GROQ_API_KEY: "+(process.env.GROQ_API_KEY?"configured":"not configured"));
+ console.log("OLLAMA_API_KEY: "+(process.env.OLLAMA_API_KEY?"configured":"not configured"));
 });
