@@ -1,0 +1,622 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #000;
+  color: #fff;
+  font-family: monospace;
+  overflow: hidden;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  color: #fff;
+  background: #090909;
+  border: 1px solid #333;
+  cursor: pointer;
+}
+
+button:active {
+  background: #fff;
+  color: #000;
+}
+
+button:disabled {
+  opacity: .4;
+  cursor: default;
+}
+
+.app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #000;
+}
+
+.topbar {
+  height: 52px;
+  flex: 0 0 52px;
+  display: grid;
+  grid-template-columns: 170px 1fr 140px;
+  border-bottom: 1px solid #292929;
+  background: #050505;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 12px;
+  border-right: 1px solid #222;
+}
+
+.brand strong {
+  font-size: 12px;
+}
+
+.brand span {
+  margin-top: 2px;
+  color: #555;
+  font-size: 8px;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.tab {
+  border: 0;
+  border-right: 1px solid #222;
+  background: #050505;
+  color: #777;
+  font-size: 10px;
+}
+
+.tab.active {
+  background: #fff;
+  color: #000;
+}
+
+.connection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 8px;
+}
+
+.main {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.view {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.view-header {
+  height: 42px;
+  flex: 0 0 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 11px;
+  border-bottom: 1px solid #222;
+  background: #030303;
+}
+
+.view-header strong {
+  display: block;
+  font-size: 11px;
+}
+
+.view-header span {
+  display: block;
+  margin-top: 2px;
+  color: #555;
+  font-size: 8px;
+}
+
+.view-header button {
+  padding: 6px 9px;
+  font-size: 8px;
+}
+
+.state {
+  color: #777 !important;
+}
+
+/* agent */
+
+.agent-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  overflow: hidden;
+}
+
+.messages {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px;
+}
+
+.welcome {
+  max-width: 700px;
+  color: #666;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.welcome-title {
+  margin-bottom: 12px;
+  color: #fff;
+  font-size: 18px;
+}
+
+.example {
+  display: inline-block;
+  padding: 9px 11px;
+  border: 1px solid #333;
+  color: #bbb;
+  background: #070707;
+}
+
+.message {
+  max-width: 850px;
+  margin-bottom: 15px;
+}
+
+.message-role {
+  margin-bottom: 5px;
+  color: #555;
+  font-size: 8px;
+  text-transform: lowercase;
+}
+
+.message-text {
+  color: #ddd;
+  font-size: 11px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.message.user .message-text {
+  color: #fff;
+}
+
+.message.error .message-text {
+  color: #aaa;
+}
+
+.thinking {
+  margin: 15px 0;
+  padding: 12px;
+  border-left: 2px solid #fff;
+  background: #070707;
+  color: #888;
+  font-size: 10px;
+}
+
+.activity-icons {
+  display: flex;
+  gap: 13px;
+  margin: 10px 0;
+  font-size: 15px;
+}
+
+.thinking-line {
+  color: #555;
+}
+
+.shell-panel {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #222;
+  background: #020202;
+}
+
+.shell-title {
+  height: 32px;
+  flex: 0 0 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 9px;
+  color: #555;
+  border-bottom: 1px solid #222;
+  font-size: 8px;
+}
+
+.shell-output {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 10px;
+}
+
+.shell-output pre {
+  margin: 0 0 8px;
+  color: #aaa;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 9px;
+}
+
+.shell-form {
+  height: 36px;
+  flex: 0 0 36px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 6px;
+  border-top: 1px solid #222;
+}
+
+.shell-form span {
+  color: #666;
+  font-size: 8px;
+}
+
+.shell-form input {
+  min-width: 0;
+  flex: 1;
+  height: 26px;
+  outline: none;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 9px;
+}
+
+.shell-form button {
+  height: 26px;
+  padding: 0 8px;
+  font-size: 8px;
+}
+
+.agent-composer {
+  flex: 0 0 auto;
+  padding: 8px;
+  border-top: 1px solid #222;
+}
+
+.agent-composer textarea {
+  width: 100%;
+  height: 65px;
+  resize: none;
+  outline: none;
+  padding: 9px;
+  border: 1px solid #333;
+  background: #050505;
+  color: #fff;
+  font-size: 10px;
+}
+
+.composer-actions {
+  height: 31px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.composer-actions span {
+  color: #555;
+  font-size: 7px;
+}
+
+.composer-actions button {
+  min-width: 60px;
+  height: 26px;
+  font-size: 8px;
+}
+
+/* code */
+
+.code-layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+}
+
+.files {
+  min-height: 0;
+  overflow: auto;
+  border-right: 1px solid #222;
+  background: #030303;
+}
+
+.files-title {
+  padding: 9px;
+  color: #555;
+  border-bottom: 1px solid #222;
+  font-size: 8px;
+}
+
+.file {
+  width: 100%;
+  display: block;
+  padding: 8px;
+  border: 0;
+  border-bottom: 1px solid #111;
+  text-align: left;
+  color: #888;
+  background: transparent;
+  font-size: 9px;
+  word-break: break-all;
+}
+
+.file.active {
+  background: #fff;
+  color: #000;
+}
+
+.editor {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  resize: none;
+  outline: none;
+  border: 0;
+  padding: 14px;
+  background: #000;
+  color: #ddd;
+  font-size: 11px;
+  line-height: 1.5;
+  tab-size: 2;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+/* review */
+
+.review-page {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px;
+}
+
+.review-card,
+.github-card,
+.suggestions,
+.log-card {
+  margin-bottom: 10px;
+  padding: 12px;
+  border: 1px solid #222;
+  background: #030303;
+}
+
+.review-page h2 {
+  margin: 0 0 12px;
+  font-size: 10px;
+  font-weight: normal;
+  color: #aaa;
+}
+
+.checks {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.checks > div {
+  min-height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  border: 1px solid #222;
+}
+
+.checks span {
+  color: #777;
+  font-size: 9px;
+}
+
+.checks b {
+  font-size: 15px;
+  font-weight: normal;
+  color: #555;
+}
+
+.checks b.ok {
+  color: #fff;
+}
+
+.checks b.bad {
+  color: #999;
+}
+
+.changed,
+.reason {
+  margin-top: 9px;
+  padding: 8px;
+  border: 1px solid #222;
+  color: #777;
+  font-size: 9px;
+}
+
+.github-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.github-actions button {
+  min-height: 32px;
+  padding: 0 11px;
+  font-size: 8px;
+}
+
+.github-actions .primary {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.github-actions .new-pr {
+  border-color: #777;
+}
+
+.git-result {
+  margin-top: 9px;
+  padding: 8px;
+  border: 1px solid #222;
+  color: #aaa;
+  font-size: 9px;
+  word-break: break-word;
+}
+
+.suggestion-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+.suggestion-grid button {
+  min-height: 34px;
+  font-size: 8px;
+}
+
+.logs {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.log {
+  display: grid;
+  grid-template-columns: 35px 1fr;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid #111;
+  color: #888;
+  font-size: 8px;
+}
+
+.log span {
+  color: #444;
+}
+
+/* footer */
+
+.statusbar {
+  height: 23px;
+  flex: 0 0 23px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  border-top: 1px solid #222;
+  background: #050505;
+  color: #444;
+  font-size: 7px;
+}
+
+/* mobile */
+
+@media (max-width: 700px) {
+
+  .topbar {
+    height: 46px;
+    flex-basis: 46px;
+    grid-template-columns: 85px 1fr;
+  }
+
+  .brand {
+    padding: 0 6px;
+  }
+
+  .brand strong {
+    font-size: 10px;
+  }
+
+  .brand span {
+    font-size: 6px;
+  }
+
+  .tab {
+    font-size: 7px;
+  }
+
+  .connection {
+    display: none;
+  }
+
+  .agent-body {
+    grid-template-columns: 1fr;
+  }
+
+  .shell-panel {
+    display: none;
+  }
+
+  .messages {
+    padding: 10px;
+  }
+
+  .message-text {
+    font-size: 10px;
+  }
+
+  .agent-composer textarea {
+    height: 55px;
+  }
+
+  .code-layout {
+    grid-template-columns: 120px 1fr;
+  }
+
+  .editor {
+    padding: 8px;
+    font-size: 9px;
+  }
+
+  .checks {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .suggestion-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .review-page {
+    padding: 8px;
+  }
+
+  .statusbar {
+    font-size: 6px;
+  }
+}

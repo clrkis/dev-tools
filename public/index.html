@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DEV-TOOLS</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;background:#050505;color:#eee;font-family:Inter,system-ui,sans-serif;overflow:hidden}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.app{height:100vh;display:grid;grid-template-rows:54px 1fr;background:#050505}
+.top{height:54px;border-bottom:1px solid #242424;display:flex;align-items:center;padding:0 18px;gap:18px}
+.logo{font-weight:800;letter-spacing:.08em;font-size:15px}
+.status{font-size:12px;color:#777;display:flex;align-items:center;gap:7px}
+.dot{width:7px;height:7px;border-radius:50%;background:#48d597}
+.topnav{margin-left:auto;display:flex;gap:4px}
+.nav{border:0;background:transparent;color:#777;padding:9px 14px;font-size:13px}
+.nav.active{color:#fff;background:#181818}
+.main{min-height:0;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr)}
+.workspace{min-width:0;min-height:0;display:grid;grid-template-rows:1fr 42%;border-right:1px solid #242424}
+.chat{min-height:0;display:flex;flex-direction:column}
+.panelhead{height:48px;border-bottom:1px solid #242424;display:flex;align-items:center;padding:0 16px;font-size:13px;font-weight:650}
+.agent{color:#888;margin-left:8px;font-weight:400}
+.messages{flex:1;overflow:auto;padding:22px}
+.empty{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;color:#444;font-size:14px}
+.msg{max-width:85%;margin-bottom:16px;padding:13px 15px;border:1px solid #262626;line-height:1.55;font-size:14px}
+.msg.user{margin-left:auto;background:#171717}
+.msg.agent{background:#0c0c0c}
+.chatbox{border-top:1px solid #242424;padding:12px;display:flex;gap:8px}
+.chatbox textarea{flex:1;resize:none;height:44px;background:#0b0b0b;color:#eee;border:1px solid #2b2b2b;outline:none;padding:12px}
+.send{width:46px;border:1px solid #333;background:#eee;color:#000}
+.shell{min-height:0;border-top:1px solid #242424;display:flex;flex-direction:column}
+.shellout{flex:1;overflow:auto;background:#020202;padding:14px;font:12px/1.55 ui-monospace,monospace;color:#aaa;white-space:pre-wrap}
+.shellbar{height:44px;border-top:1px solid #242424;display:flex}
+.shellbar input{flex:1;background:#080808;color:#eee;border:0;padding:0 14px;outline:none;font:12px monospace}
+.run{width:70px;background:#eee;color:#000;border:0;font-size:12px}
+.side{min-width:0;display:grid;grid-template-rows:1fr 1fr;background:#070707}
+.code,.logs{min-height:0;display:flex;flex-direction:column}
+.logs{border-top:1px solid #242424}
+.codebody{flex:1;min-height:0;display:flex}
+.files{width:170px;overflow:auto;border-right:1px solid #242424;padding:8px}
+.file{display:block;width:100%;text-align:left;background:transparent;color:#777;border:0;padding:8px;font:12px monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file:hover,.file.active{background:#151515;color:#fff}
+.editor{flex:1;border:0;outline:0;resize:none;background:#030303;color:#ddd;padding:16px;font:12px/1.6 ui-monospace,monospace}
+.logbody{flex:1;overflow:auto;padding:14px;font:12px/1.6 monospace;color:#777;white-space:pre-wrap}
+.actions{display:flex;margin-left:auto;gap:6px}
+.action{border:1px solid #292929;background:#0b0b0b;color:#aaa;padding:5px 9px;font-size:11px}
+.action:hover{color:#fff;border-color:#555}
+@media(max-width:800px){
+ .top{padding:0 10px}
+ .topnav{display:none}
+ .main{display:block;overflow:auto}
+ .workspace,.side{height:100vh;display:none;border:0}
+ .workspace.show{display:grid;grid-template-rows:58% 42%}
+ .side.show{display:grid;height:100vh}
+ .files{width:125px}
+ .panelhead{padding:0 10px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="logo">DEV-TOOLS</div>
+  <div class="status"><span class="dot"></span><span id="status">agent ready</span></div>
+  <nav class="topnav">
+    <button class="nav active" onclick="view('workspace',this)">Agent / Shell</button>
+    <button class="nav" onclick="view('code',this)">Code</button>
+    <button class="nav" onclick="view('logs',this)">Logs</button>
+  </nav>
+</header>
+
+<main class="main">
+<section class="workspace show" id="workspace">
+  <div class="chat">
+    <div class="panelhead">Chat <span class="agent">AI Agent</span></div>
+    <div class="messages" id="messages">
+      <div class="empty" id="empty">Tell the agent what you want to build.</div>
+    </div>
+    <div class="chatbox">
+      <textarea id="prompt" placeholder="Ask the agent to build, edit or review code..."></textarea>
+      <button class="send" onclick="chat()">↑</button>
+    </div>
+  </div>
+
+  <div class="shell">
+    <div class="panelhead">Shell <span class="agent">execution</span></div>
+    <div class="shellout" id="shellout"></div>
+    <div class="shellbar">
+      <input id="command" placeholder="$ execute command">
+      <button class="run" onclick="runShell()">Run</button>
+    </div>
+  </div>
+</section>
+
+<section class="side" id="code">
+  <div class="code">
+    <div class="panelhead">
+      Code
+      <div class="actions">
+        <button class="action" onclick="refreshFiles()">Refresh</button>
+        <button class="action" onclick="saveCode()">Save</button>
+      </div>
+    </div>
+    <div class="codebody">
+      <div class="files" id="files"></div>
+      <textarea class="editor" id="editor" spellcheck="false" placeholder="Select a file..."></textarea>
+    </div>
+  </div>
+
+  <div class="logs">
+    <div class="panelhead">Logs</div>
+    <div class="logbody" id="logs">ready\n</div>
+  </div>
+</section>
+</main>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let currentFile="";
+
+function log(x){
+  $("logs").textContent+=`[${new Date().toLocaleTimeString()}] ${x}\n`;
+  $("logs").scrollTop=$("logs").scrollHeight;
+}
+
+function view(v,btn){
+  if(innerWidth<=800){
+    $("workspace").classList.toggle("show",v==="workspace");
+    $("code").classList.toggle("show",v!=="workspace");
+  }
+  document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));
+  if(btn)btn.classList.add("active");
+}
+
+async function chat(){
+  const p=$("prompt").value.trim();
+  if(!p)return;
+
+  $("empty")?.remove();
+
+  const u=document.createElement("div");
+  u.className="msg user";
+  u.textContent=p;
+  $("messages").appendChild(u);
+
+  $("prompt").value="";
+  $("status").textContent="thinking...";
+  log("Agent request: "+p);
+
+  const a=document.createElement("div");
+  a.className="msg agent";
+  a.textContent="Agent thinking...";
+  $("messages").appendChild(a);
+
+  try{
+    const r=await fetch("/api/chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({prompt:p})
+    });
+    const d=await r.json();
+    a.textContent=d.answer||d.error||"No response";
+    log("Agent completed");
+  }catch(e){
+    a.textContent="Agent unavailable: "+e.message;
+    log("Agent error: "+e.message);
+  }
+
+  $("status").textContent="agent ready";
+  $("messages").scrollTop=$("messages").scrollHeight;
+}
+
+async function runShell(){
+  const c=$("command").value.trim();
+  if(!c)return;
+
+  $("shellout").textContent+=`$ ${c}\n`;
+  $("command").value="";
+  log("Shell: "+c);
+
+  try{
+    const r=await fetch("/api/shell",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({command:c})
+    });
+    const d=await r.json();
+    $("shellout").textContent+=(d.stdout||"")+(d.stderr||"");
+    $("shellout").scrollTop=$("shellout").scrollHeight;
+    log("Shell finished: "+d.code);
+  }catch(e){
+    $("shellout").textContent+=e.message+"\n";
+    log("Shell error");
+  }
+}
+
+async function refreshFiles(){
+  const r=await fetch("/api/files");
+  const d=await r.json();
+  $("files").innerHTML="";
+  for(const f of d.files||[]){
+    const b=document.createElement("button");
+    b.className="file";
+    b.textContent=f;
+    b.onclick=()=>openFile(f,b);
+    $("files").appendChild(b);
+  }
+  log("Files refreshed");
+}
+
+async function openFile(f,b){
+  const r=await fetch("/api/file?path="+encodeURIComponent(f));
+  $("editor").value=await r.text();
+  currentFile=f;
+  document.querySelectorAll(".file").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  log("Opened "+f);
+}
+
+async function saveCode(){
+  if(!currentFile){
+    log("No file selected");
+    return;
+  }
+  log("Save requested for "+currentFile);
+}
+
+$("prompt").addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&!e.shiftKey){
+    e.preventDefault();
+    chat();
+  }
+});
+
+$("command").addEventListener("keydown",e=>{
+  if(e.key==="Enter")runShell();
+});
+
+fetch("/api/health").then(r=>r.json()).then(d=>{
+  $("status").textContent=d.ok?"agent ready":"offline";
+  log(`Ollama: ${d.model}`);
+}).catch(()=>{
+  $("status").textContent="offline";
+});
+
+refreshFiles();
+</script>
+</body>
+</html>

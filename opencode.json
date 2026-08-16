@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "Luôn giao tiếp bằng tiếng Việt.",
+    "Khi được yêu cầu sửa code, phải đọc code hiện tại trước.",
+    "Sau khi sửa phải kiểm tra lỗi và chạy build hoặc test phù hợp.",
+    "Không tự ý xóa dữ liệu người dùng nếu chưa cần thiết.",
+    "Ưu tiên thay đổi nhỏ, có thể review bằng git diff."
+  ]
+}
